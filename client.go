@@ -1,18 +1,17 @@
 package dydx
 
 import (
-	"log"
-	"os"
+	"github.com/sirupsen/logrus"
 	"strings"
 	"time"
 
-	"github.com/go-numb/go-dydx/types"
+	"github.com/huangjosh/go-dydx/types"
 	"github.com/umbracle/ethgo/jsonrpc"
 
-	"github.com/go-numb/go-dydx/helpers"
-	"github.com/go-numb/go-dydx/onboard"
-	"github.com/go-numb/go-dydx/private"
-	"github.com/go-numb/go-dydx/public"
+	"github.com/huangjosh/go-dydx/helpers"
+	"github.com/huangjosh/go-dydx/onboard"
+	"github.com/huangjosh/go-dydx/private"
+	"github.com/huangjosh/go-dydx/public"
 )
 
 type Client struct {
@@ -34,10 +33,13 @@ type Client struct {
 	Public     *public.Public
 	OnBoarding *onboard.OnBoarding
 
-	Logger *log.Logger
+	Logger *logrus.Entry
 }
 
 func New(options types.Options) *Client {
+	instance := logrus.New()
+	instance.SetLevel(logrus.WarnLevel)
+	logger := instance.WithFields(logrus.Fields{"go-dydx": "lib"})
 	client := &Client{
 		Host:              strings.TrimPrefix(options.Host, "/"),
 		ApiTimeout:        3 * time.Second,
@@ -46,7 +48,7 @@ func New(options types.Options) *Client {
 		StarkPrivateKey:   options.StarkPrivateKey,
 		ApiKeyCredentials: options.ApiKeyCredentials,
 
-		Logger: log.New(os.Stderr, "go-dydx ", log.LstdFlags),
+		Logger: logger,
 	}
 
 	if options.Web3 != nil {
@@ -76,7 +78,7 @@ func New(options types.Options) *Client {
 		NetworkId:  client.NetworkId,
 		EthAddress: client.DefaultAddress,
 		Singer:     helpers.NewSigner(client.EthSigner, client.NetworkId),
-		Logger:     client.Logger,
+		Logger:     logger,
 	}
 	if options.ApiKeyCredentials == nil {
 		client.ApiKeyCredentials = client.OnBoarding.RecoverDefaultApiCredentials(client.DefaultAddress)
@@ -90,14 +92,14 @@ func New(options types.Options) *Client {
 		ApiKeyCredentials: client.ApiKeyCredentials,
 
 		RateLimit: new(types.RateLimit),
-		Logger:    client.Logger,
+		Logger:    logger,
 	}
 	client.Public = &public.Public{
 		Host:      client.Host,
 		NetworkId: client.NetworkId,
 
 		RateLimit: new(types.RateLimit),
-		Logger:    client.Logger,
+		Logger:    logger,
 	}
 
 	return client

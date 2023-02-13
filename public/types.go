@@ -2,10 +2,10 @@ package public
 
 import (
 	"encoding/json"
-	"log"
+	"github.com/sirupsen/logrus"
 	"time"
 
-	"github.com/go-numb/go-dydx/types"
+	"github.com/huangjosh/go-dydx/types"
 )
 
 type Public struct {
@@ -13,7 +13,7 @@ type Public struct {
 	NetworkId int
 
 	RateLimit *types.RateLimit
-	Logger    *log.Logger
+	Logger    *logrus.Entry
 }
 
 type MarketsResponse struct {

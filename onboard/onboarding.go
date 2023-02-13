@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-	"log"
+	"github.com/sirupsen/logrus"
 	"math/big"
 	"strings"
 
@@ -12,8 +12,8 @@ import (
 	ethmath "github.com/ethereum/go-ethereum/common/math"
 	solsha3 "github.com/miguelmota/go-solidity-sha3"
 
-	"github.com/go-numb/go-dydx/helpers"
-	"github.com/go-numb/go-dydx/types"
+	"github.com/huangjosh/go-dydx/helpers"
+	"github.com/huangjosh/go-dydx/types"
 )
 
 type OnBoarding struct {
@@ -24,7 +24,7 @@ type OnBoarding struct {
 	StarkPublicKey            string
 	StarkPublicKeyYCoordinate string
 	Singer                    *helpers.SignOnboardingAction
-	Logger                    *log.Logger
+	Logger                    *logrus.Entry
 }
 
 type ApiKeyCredentials struct {
